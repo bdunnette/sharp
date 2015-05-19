@@ -471,9 +471,9 @@ Sharp.prototype.withMetadata = function(withMetadata) {
 };
 
 /*
-  Tile size and overlap for Deep Zoom output
+  Tile size, overlap, and layout for Deep Zoom output
 */
-Sharp.prototype.tile = function(size, overlap) {
+Sharp.prototype.tile = function(size, overlap, layout) {
   // Size of square tiles, in pixels
   if (typeof size !== 'undefined' && size !== null) {
     if (!Number.isNaN(size) && size % 1 === 0 && size >= 1 && size <= 8192) {
@@ -492,6 +492,16 @@ Sharp.prototype.tile = function(size, overlap) {
     } else {
       throw new Error('Invalid tile overlap (0 to 8192) ' + overlap);
     }
+  }
+  // Tile directory layout - deepzoom (the default), zoomify, or google
+  if (!layout || layout == 'deepzoom') {
+    this.options.tileLayout = sharp.tile.deepzoom;
+  } else if (layout == 'zoomify') {
+    this.options.tileLayout = sharp.tile.zoomify;
+  } else if (layout == 'google') {
+    this.options.tileLayout = sharp.tile.google;
+  } else {
+    throw new Error('Invalid tile layout - should be one of: deepzoom, zoomify, google');
   }
   return this;
 };
